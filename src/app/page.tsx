@@ -1,95 +1,84 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+
+import { useEffect, useState } from "react";
+
+import SearchForm from "@/components/searchform/search-form";
+import ProfileStats from "@/components/profile-stat/profile-stat";
+import ErrorMessage from "@/components/error-message/error-message";
+import { GithubUser } from "@/types/github-user";
+
+import { getUserByName } from "@/services/api";
+import { formatDate } from "@/utils/format-date";
+
+import { Buildings, Link, MapPin, TwitterLogo } from "@phosphor-icons/react/dist/ssr";
+
+import "./index.css";
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const  [user, setUser] = useState<GithubUser | undefined>(undefined);
+  const  [error, setError] = useState<string | undefined>(undefined);
+  
+  const userAdded = (name: string):void => {
+    setError("");
+    getUserByName(name)
+    .then( ( data ) => { return setUser( data ); } )
+    .catch( ( error ) => { setError(error.message) } );
+  };
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+  useEffect(() => {
+    getUserByName("lukinhagabriel")
+      .then( ( data ) => { return setUser( data ); } )
+      .catch( ( error ) => { setError(error.message) } );
+  }, []);
+
+  return (
+    <main>
+      <SearchForm searchUserByName = {(name:string)  => userAdded(name) } />
+      {error && user &&
+        (
+          <ErrorMessage message={error}/>
+        )}
+      {(user) && (!error) &&
+        (<section className="profile">
+          <div  className="profile__avatar">
+            <img src={`https://github.com/${user.login}.png`} alt="Avatar" />
+          </div>
+          <div className="profile__user">
+            <h2 className="profile__name">{user.name}</h2>
+            <a href={`https://github.com/${user.login}`} target="_blank" rel="noopener noreferrer" className="profile__username">@{user.login}</a>
+            <p className="profile__created_at">Juntou-se em <time dateTime={user.created_at}>{formatDate(user.created_at)}</time></p>
+          </div>
+            
+          <p className="profile__bio">{user.bio || "Bio não disponível"}</p>
+            
+          <div  className="profile__stats">
+            <ProfileStats label="Repos:" value={`${user.public_repos}`}/>
+            <ProfileStats label="Followers:" value={`${user.followers}`}/>
+            <ProfileStats label="Following:" value={`${user.following}`}/>
+          </div>
+            
+          <ul className="profile__details">
+            <li className="profile__details__item">
+              <MapPin size={24} weight="fill"/>
+              <p>{user.location}</p>
+            </li>
+              
+            <li className="profile__details__item">
+              <TwitterLogo size={24} weight="fill"/>
+              <a href={`https://x.com/${user.twitter_username}`} target="_blanck" rel="noopener noreferrer">{user.twitter_username || "Não disponível"}</a>
+            </li>
+
+            <li className="profile__details__item">
+              <Link size={24} />
+              <a href={`${user.blog}`} target="_blank" rel="noopener noreferrer">{user.blog  || "Não disponível"}</a>
+            </li>
+              
+            <li className="profile__details__item">
+              <Buildings size={24} weight="fill" />
+              <p>{user.company || "Não disponível"}</p>
+            </li>
+          </ul>
+        </section>)}
+    </main>
   );
 }

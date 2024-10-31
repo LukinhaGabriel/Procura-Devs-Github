@@ -1,0 +1,19 @@
+.theme{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.theme-text{
+    font-size: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.125rem;
+}
+
+.theme-button{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem  1rem;
+}

@@ -13,6 +13,11 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "noEmitOnError": true, // Não gera arquivo JS enquanto o arquivo TS não tiver passando na compilação
+    "noImplicitAny": true, // não adotar o tipo any implicitamente
+    "removeComments": true, // Remove os comentários do codigo compilado
+    "strictNullChecks": true, // Diz para o compilador TSC que pare de assumir implicitamente o tipo null para todos os tipos da aplicação.
+
     "plugins": [
       {
         "name": "next"

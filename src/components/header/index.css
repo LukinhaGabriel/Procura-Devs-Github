@@ -1,0 +1,21 @@
+header{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+}
+
+.header__title{
+    font-size: 2rem;
+    line-height: 100%;
+    font-weight: 700;
+}
+
+@media screen and (max-width: 425px){
+   .header__title{
+        font-size: 1.5rem;
+        padding: 1rem;
+   }
+}
