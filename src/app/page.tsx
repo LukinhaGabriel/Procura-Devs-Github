@@ -14,21 +14,41 @@ import { Buildings, Link, MapPin, TwitterLogo } from "@phosphor-icons/react/dist
 
 import "./index.css";
 
+function formatLink(url:string):string{
+  const normalizedUrl = url.match(/^https?:\/\//) ? url : `https://${url}`;
+  return normalizedUrl;
+}
+
 export default function Home() {
   const  [user, setUser] = useState<GithubUser | undefined>(undefined);
   const  [error, setError] = useState<string | undefined>(undefined);
   
+  
   const userAdded = (name: string):void => {
     setError("");
-    getUserByName(name)
-    .then( ( data ) => { return setUser( data ); } )
-    .catch( ( error ) => { setError(error.message) } );
+    if(user?.login !== name){
+      getUserByName(name)
+      .then( ( data ) => { 
+        setUser( data ); 
+        localStorage.setItem("githubUser", JSON.stringify(data));
+      } )
+      .catch( ( error ) => { setError(error.message) } );
+    }
   };
 
   useEffect(() => {
-    getUserByName("lukinhagabriel")
-      .then( ( data ) => { return setUser( data ); } )
+    const storedUser = localStorage.getItem("githubUser");
+    if(storedUser){
+      setUser(JSON.parse(storedUser));
+    }
+    else{
+      getUserByName("lukinhagabriel")
+      .then( ( data ) => { 
+        setUser( data );
+        localStorage.setItem("githubUser", JSON.stringify(data));
+      } )
       .catch( ( error ) => { setError(error.message) } );
+    }
   }, []);
 
   return (
@@ -60,7 +80,7 @@ export default function Home() {
           <ul className="profile__details">
             <li className="profile__details__item">
               <MapPin size={24} weight="fill"/>
-              <p>{user.location}</p>
+              <p>{user.location || "Não disponível"}</p>
             </li>
               
             <li className="profile__details__item">
@@ -70,7 +90,7 @@ export default function Home() {
 
             <li className="profile__details__item">
               <Link size={24} />
-              <a href={`${user.blog}`} target="_blank" rel="noopener noreferrer">{user.blog  || "Não disponível"}</a>
+              <a href={formatLink(user.blog)} target="_blank" rel="noopener noreferrer">{user.blog  || "Não disponível"}</a>
             </li>
               
             <li className="profile__details__item">

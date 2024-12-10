@@ -11,8 +11,10 @@ const outfit = Outfit({
 })
 
 export const metadata: Metadata = {
-  title: "Github User Search",
+  title: "Procura Devs Github",
   description: "Pesquise por usuários do GitHub e veja suas informações de perfil",
+  keywords: "github, pesquisa, perfil, usuários, dev",
+  creator:  "Lucas Gabriel Moya",
 };
 
 export default function RootLayout({children,}: Readonly<{children: React.ReactNode;}>) {
