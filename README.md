@@ -19,6 +19,9 @@ Neste projeto, foi usado a API de usuários do GitHub para extrair dados de perf
 - [x] LocalStorage do Navegador: Armazenamento local de dados como preferências de tema;
 - [x] [Phosphor](https://phosphoricons.com/) Biblioteca de ícones utilizada para elementos de interface;
 
+## Link para acessar o projeto
+### [Ver Projeto](https://lucasgabrielmoya-procuradevsgithub.vercel.app/)
+  
 ## Imagem do Projeto
 <img src="./design/layout-dark.png">
 <img src="./design/layout-light.png">
